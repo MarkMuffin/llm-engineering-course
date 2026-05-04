@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 from openai import OpenAI
 from dotenv import load_dotenv
@@ -11,11 +12,11 @@ from tenacity import retry, wait_exponential
 
 load_dotenv(override=True)
 
-MODEL = "openai/gpt-4.1-nano"
+MODEL = "openrouter/openai/gpt-4.1-nano"
 
 DB_NAME = str(Path(__file__).parent.parent / "preprocessed_db")
 collection_name = "docs"
-embedding_model = "text-embedding-3-large"
+embedding_model = "openai/text-embedding-3-large"
 KNOWLEDGE_BASE_PATH = Path(__file__).parent.parent / "knowledge-base"
 AVERAGE_CHUNK_SIZE = 100
 wait = wait_exponential(multiplier=1, min=10, max=240)
@@ -23,7 +24,10 @@ wait = wait_exponential(multiplier=1, min=10, max=240)
 
 WORKERS = 3
 
-openai = OpenAI()
+openai = OpenAI(
+     base_url="https://openrouter.ai/api/v1",
+     api_key=os.environ.get("OPENROUTER_API_KEY"),
+)
 
 
 class Result(BaseModel):

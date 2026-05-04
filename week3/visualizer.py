@@ -1,3 +1,4 @@
+import os
 import networkx as nx
 import matplotlib.pyplot as plt
 from typing import List, Dict
@@ -10,7 +11,7 @@ load_dotenv(override=True)
 
 class TokenPredictor:
     def __init__(self, model_name: str):
-        self.client = OpenAI()
+        self.client = OpenAI(openrouter_url = "https://openrouter.ai/api/v1", api_key=os.getenv('OPENROUTER_API_KEY'))
         self.messages = []
         self.predictions = []
         self.model_name = model_name

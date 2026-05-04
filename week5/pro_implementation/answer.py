@@ -1,3 +1,4 @@
+import os
 from openai import OpenAI
 from dotenv import load_dotenv
 from chromadb import PersistentClient
@@ -10,16 +11,19 @@ from tenacity import retry, wait_exponential
 load_dotenv(override=True)
 
 # MODEL = "openai/gpt-4.1-nano"
-MODEL = "groq/openai/gpt-oss-120b"
+MODEL = "openrouter/openai/gpt-oss-120b"
 DB_NAME = str(Path(__file__).parent.parent / "preprocessed_db")
 KNOWLEDGE_BASE_PATH = Path(__file__).parent.parent / "knowledge-base"
 SUMMARIES_PATH = Path(__file__).parent.parent / "summaries"
 
 collection_name = "docs"
-embedding_model = "text-embedding-3-large"
+embedding_model = "openai/text-embedding-3-large"
 wait = wait_exponential(multiplier=1, min=10, max=240)
 
-openai = OpenAI()
+openai = OpenAI(
+     base_url="https://openrouter.ai/api/v1",
+     api_key=os.environ.get("OPENROUTER_API_KEY"),
+)
 
 chroma = PersistentClient(path=DB_NAME)
 collection = chroma.get_or_create_collection(collection_name)
